@@ -1,0 +1,19 @@
+{
+    "database": {
+        "host": "localhost",
+        "port": 3306,
+        "user": "root",
+        "password": "root123",
+        "database": "node_mysql_api_trangia"
+},
+"secret": "SUPER_SECRET_KEY_REPLACE_ME_IN_PRODUCTION",
+"emailFrom": "info@my-node-api.com",
+"smtpOptions": {
+    "host": "smtp.ethereal.email",
+    "port": 587,
+"auth": {
+    "user": "annabelle.flatley@ethereal.email",
+    "pass": "B7KYbBgaCtexsRFNBY"
+    }
+  }
+}
