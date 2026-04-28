@@ -1,4 +1,5 @@
 import config from '../config.json';
+import mysql from 'mysql2/promise';
 import { Sequelize } from 'sequelize';
 import accountModel from '../accounts/account.model';
 import refreshTokenModel from '../accounts/refresh-token.model';
@@ -9,10 +10,14 @@ export default db;
 initialize();
 
 async function initialize() {
-  const sequelize = new Sequelize({
-    dialect: 'sqlite',
-    storage: './database.sqlite'
-  });
+  const { host, port, user, password, database } = config.database;
+
+  // create db if it doesn't already exist
+  const connection = await mysql.createConnection({ host, port, user, password });
+  await connection.query(`CREATE DATABASE IF NOT EXISTS \`${database}\`;`);
+  
+
+  const sequelize = new Sequelize(database, user, password, {dialect: 'mysql'});
 
   db.Account = accountModel(sequelize);
   db.RefreshToken = refreshTokenModel(sequelize);

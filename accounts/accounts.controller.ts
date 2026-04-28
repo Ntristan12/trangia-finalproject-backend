@@ -35,7 +35,6 @@ function authenticateSchema(req: any, res: any, next: any) {
 function authenticate(req: any, res: any, next: any) {
   const { email, password } = req.body;
   const ipAddress = req.ip;
-
   accountService.authenticate({ email, password, ipAddress })
     .then(({ refreshToken, ...account }: any) => {
       setTokenCookie(res, refreshToken);
@@ -57,7 +56,9 @@ function refreshToken(req: any, res: any, next: any) {
 }
 
 function revokeTokenSchema(req: any, res: any, next: any) {
-  const schema = Joi.object({ token: Joi.string().empty('') });
+  const schema = Joi.object({ 
+    token: Joi.string().empty('') 
+  });
   validateRequest(req, next, schema);
 }
 
