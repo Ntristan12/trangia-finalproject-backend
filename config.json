@@ -1,10 +1,10 @@
 {
     "database": {
-        "host": "localhost",
+        "host": " 153.92.15.31",
         "port": 3306,
-        "user": "root",
-        "password": "root123",
-        "database": "node_mysql_api_trangia"
+        "user": "u875409848_trangia",
+        "password": "2qW^sUg=M",
+        "database": "u875409848_trangia"
 },
 "secret": "SUPER_SECRET_KEY_REPLACE_ME_IN_PRODUCTION",
 "emailFrom": "info@my-node-api.com",

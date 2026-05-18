@@ -2,6 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import config from './config';
 import errorHandler from './_middleware/error-handler';
 import accountsController from './accounts/accounts.controller';
 import swaggerDocs from './_helpers/swagger';
@@ -15,9 +16,13 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 
-app.use(cors({ origin: (origin, callback) => callback(null, true), credentials: true }));
+// CORS - restrict to frontend origin specified in environment variable
+app.use(cors({ origin: config.corsOrigin, credentials: true }));
 
-app.use('/accounts', accountsController); 
+// health check route
+app.get('/', (req, res) => res.json({ message: 'API is running' }));
+
+app.use('/accounts', accountsController);
 
 app.use('/api-docs', swaggerDocs);
 
