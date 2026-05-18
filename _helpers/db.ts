@@ -12,12 +12,14 @@ initialize();
 async function initialize() {
   const { host, port, user, password, database } = config.database;
 
-  // create db if it doesn't already exist
   const connection = await mysql.createConnection({ host, port, user, password });
   await connection.query(`CREATE DATABASE IF NOT EXISTS \`${database}\`;`);
-  
 
-  const sequelize = new Sequelize(database, user, password, {dialect: 'mysql'});
+  const sequelize = new Sequelize(database, user, password, {
+    dialect: 'mysql',
+    host,
+    port,
+  });
 
   db.Account = accountModel(sequelize);
   db.RefreshToken = refreshTokenModel(sequelize);
