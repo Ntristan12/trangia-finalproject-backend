@@ -92,7 +92,7 @@ async function register(params: any, origin: any) {
 
   await account.save();
 
-  await sendVerificationEmail(account, origin);
+ // await sendVerificationEmail(account, origin);
 }
 
 async function verifyEmail({token}: any) {
