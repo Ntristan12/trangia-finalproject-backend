@@ -45,8 +45,8 @@ Node.js + TypeScript + Express + Sequelize + MySQL backend for the IPT 2026 Fina
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/DelCuyos/cuyos-finalproject-backend.git
-cd cuyos-finalproject-backend
+git clone https://github.com/Ntristan12/trangia-finalproject-backend.git
+cd trangia-finalproject-backend
 ```
 
 ### 2. Install dependencies
@@ -125,7 +125,7 @@ Set these in Render → your backend service → **Environment**:
 | `DB_USER` | your MySQL username |
 | `DB_PASSWORD` | your MySQL password |
 | `DB_NAME` | `node_mysql_api` |
-| `CORS_ORIGIN` | `https://cuyos-finalproject-frontend.onrender.com` |
+| `CORS_ORIGIN` | `https://trangia-finalproject-frontend.onrender.com` |
 | `COOKIE_SECURE` | `true` |
 | `COOKIE_SAMESITE` | `lax` |
 | `EMAIL_FROM` | your sender email address |

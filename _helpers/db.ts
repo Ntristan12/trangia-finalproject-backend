@@ -1,4 +1,4 @@
-import config from '../config';
+import config from '../app-config';
 import mysql from 'mysql2/promise';
 import { Sequelize } from 'sequelize';
 import accountModel from '../accounts/account.model';

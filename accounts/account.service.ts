@@ -1,4 +1,4 @@
-import config from '../config';
+import config from '../app-config';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
@@ -82,16 +82,13 @@ async function register(params: any, origin: any) {
   
   const isFirstAccount = (await db.Account.count()) === 0;
   account.role = isFirstAccount ? Role.Admin : Role.User;
-  account.verified = new Date();
-
-  // FIX: clear verificationToken since email verification is skipped
-  account.verificationToken = null;
+  account.verificationToken = randomTokenString();
 
   account.passwordHash = await hash(params.password);
 
   await account.save();
 
-  // await sendVerificationEmail(account, origin);
+  await sendVerificationEmail(account, origin);
 }
 
 async function verifyEmail({token}: any) {
