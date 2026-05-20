@@ -28,7 +28,7 @@ async function authenticate({ email, password, ipAddress }: any) {
   const account = await db.Account.scope('withHash').findOne({ where: { email } });
   
   if (!account || !account.isVerified || !(await bcrypt.compare(password, account.passwordHash))) {
-    throw new Error('Email or password is incorrect');
+    throw 'Email or password is incorrect';
   }
 
   const jwtToken = generateJwtToken(account);
@@ -96,7 +96,7 @@ async function register(params: any, origin: any) {
 
 async function verifyEmail({token}: any) {
   const account = await db.Account.findOne({ where: { verificationToken: token } });
-  if (!account) throw new Error('Verification failed');
+  if (!account) throw 'Verification failed';
 
   account.verified = Date.now();
   account.verificationToken = null;
@@ -124,7 +124,7 @@ async function validateResetToken({token}: any) {
     }
   });
 
-  if (!account) throw new Error('Invalid token');
+  if (!account) throw 'Invalid token';
 
   return account;
 }
@@ -151,7 +151,7 @@ async function getById(id: any) {
 
 async function create(params: any) {
   if (await db.Account.findOne({ where: { email: params.email } })) {
-    throw new Error('Email "' + params.email + '" is already registered');
+    throw 'Email "' + params.email + '" is already registered';
   }
   const account = new db.Account(params);
   account.verified = Date.now();
@@ -168,7 +168,7 @@ async function update(id: any, params: any) {
   const account = await getAccount(id);
 
   if (params.email && account.email !== params.email && await db.Account.findOne({ where: { email: params.email } })) {
-    throw new Error('Email "' + params.email + '" is already taken');
+    throw 'Email "' + params.email + '" is already taken';
   }
 
   if (params.password) {
@@ -188,13 +188,13 @@ async function _delete(id: any) {
 
 async function getAccount(id: any) {
   const account = await db.Account.findByPk(id);
-  if (!account) throw new Error('Account not found');
+  if (!account) throw 'Account not found';
   return account;
 }
 
 async function getRefreshToken(token: any) {
   const refreshToken = await db.RefreshToken.findOne({ where: { token } });
-  if (!refreshToken || !refreshToken.isActive) throw new Error('Invalid token');
+  if (!refreshToken || !refreshToken.isActive) throw 'Invalid token';
   return refreshToken;
 }
 
