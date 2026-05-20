@@ -28,7 +28,7 @@ async function authenticate({ email, password, ipAddress }: any) {
   const account = await db.Account.scope('withHash').findOne({ where: { email } });
   
   if (!account || !account.isVerified || !(await bcrypt.compare(password, account.passwordHash))) {
-    throw 'Email or password is incorrect';
+    throw new Error('Email or password is incorrect');
   }
 
   const jwtToken = generateJwtToken(account);
@@ -51,19 +51,16 @@ async function refreshToken({ token, ipAddress }: any) {
   refreshToken.revoked = Date.now();
   refreshToken.revokedByIp = ipAddress;
   refreshToken.replacedByToken = newRefreshToken.token;
-    await refreshToken.save();
-    await newRefreshToken.save();
+  await refreshToken.save();
+  await newRefreshToken.save();
 
+  const jwtToken = generateJwtToken(account);
 
-    const jwtToken = generateJwtToken(account);
-    
-    return {
+  return {
     ...basicDetails(account),
     jwtToken,
     refreshToken: newRefreshToken.token
-
-};
-
+  };
 }
 
 
@@ -79,7 +76,6 @@ async function revokeToken({ token, ipAddress }: any) {
 async function register(params: any, origin: any) {
   if (await db.Account.findOne({ where: { email: params.email } })) {
     return await sendAlreadyRegisteredEmail(params.email, origin);
-    
   }
 
   const account = new db.Account(params);
@@ -87,47 +83,48 @@ async function register(params: any, origin: any) {
   const isFirstAccount = (await db.Account.count()) === 0;
   account.role = isFirstAccount ? Role.Admin : Role.User;
   account.verified = new Date();
-  
+
+  // FIX: clear verificationToken since email verification is skipped
+  account.verificationToken = null;
+
   account.passwordHash = await hash(params.password);
 
   await account.save();
 
- // await sendVerificationEmail(account, origin);
+  // await sendVerificationEmail(account, origin);
 }
 
 async function verifyEmail({token}: any) {
-const account = await db.Account.findOne({ where: { verificationToken: token } });
-if (!account) throw 'Verification failed';
+  const account = await db.Account.findOne({ where: { verificationToken: token } });
+  if (!account) throw new Error('Verification failed');
 
-    account.verified = Date.now();
-    account.verificationToken = null;
-    await account.save();
+  account.verified = Date.now();
+  account.verificationToken = null;
+  await account.save();
 }
 
 
-
-
 async function forgotPassword({ email }: any, origin: any) {
-    const account = await db.Account.findOne({ where: { email } });
+  const account = await db.Account.findOne({ where: { email } });
 
-    if (!account) return;
+  if (!account) return;
 
-    account.resetToken = randomTokenString();
-    account.resetTokenExpires = new Date(Date.now() + 24*60*60*1000);
-    await account.save();
+  account.resetToken = randomTokenString();
+  account.resetTokenExpires = new Date(Date.now() + 24*60*60*1000);
+  await account.save();
 
-    await sendPasswordResetEmail(account, origin);
+  await sendPasswordResetEmail(account, origin);
 }
 
 async function validateResetToken({token}: any) {
   const account = await db.Account.findOne({
     where: {
-        resetToken: token,
-        resetTokenExpires: { [Op.gt]: Date.now()}
+      resetToken: token,
+      resetTokenExpires: { [Op.gt]: Date.now()}
     }
-});
+  });
 
-  if (!account) throw 'Invalid token';
+  if (!account) throw new Error('Invalid token');
 
   return account;
 }
@@ -142,29 +139,28 @@ async function resetPassword({ token, password }: any) {
 }
 
 
-
 async function getAll() {
-    const accounts = await db.Account.findAll();
-    return accounts.map((x: any) => basicDetails(x));
-    }
+  const accounts = await db.Account.findAll();
+  return accounts.map((x: any) => basicDetails(x));
+}
 
 async function getById(id: any) {
-    const account = await getAccount(id);
-    return basicDetails(account);
+  const account = await getAccount(id);
+  return basicDetails(account);
 }
 
 async function create(params: any) {
-    if (await db.Account.findOne({ where: { email: params.email } })) {
-        throw 'Email "' + params.email + '" is already registered';
-    }
-    const account = new db.Account(params);
-    account.verified = Date.now();
+  if (await db.Account.findOne({ where: { email: params.email } })) {
+    throw new Error('Email "' + params.email + '" is already registered');
+  }
+  const account = new db.Account(params);
+  account.verified = Date.now();
 
-    account.passwordHash = await hash(params.password);
+  account.passwordHash = await hash(params.password);
 
-    await account.save();
+  await account.save();
 
-    return basicDetails(account);
+  return basicDetails(account);
 }
 
 
@@ -172,12 +168,11 @@ async function update(id: any, params: any) {
   const account = await getAccount(id);
 
   if (params.email && account.email !== params.email && await db.Account.findOne({ where: { email: params.email } })) {
-    throw 'Email "' + params.email + '" is already taken';
+    throw new Error('Email "' + params.email + '" is already taken');
   }
 
   if (params.password) {
     params.passwordHash = await hash(params.password);
-    
   }
 
   Object.assign(account, params);
@@ -193,21 +188,19 @@ async function _delete(id: any) {
 
 async function getAccount(id: any) {
   const account = await db.Account.findByPk(id);
-  if (!account) throw 'Account not found';
+  if (!account) throw new Error('Account not found');
   return account;
 }
 
 async function getRefreshToken(token: any) {
   const refreshToken = await db.RefreshToken.findOne({ where: { token } });
-  if (!refreshToken || !refreshToken.isActive) throw 'Invalid token';
+  if (!refreshToken || !refreshToken.isActive) throw new Error('Invalid token');
   return refreshToken;
 }
 
 async function hash(password: any) {
   return await bcrypt.hash(password, 10);
 }
-
-
 
 function generateJwtToken(account: any) {
   return jwt.sign({ sub: account.id, id: account.id }, config.secret, { expiresIn: '15m' });
@@ -230,8 +223,6 @@ function basicDetails(account: any) {
   const { id, title, firstName, lastName, email, role, created, updated, isVerified } = account;
   return { id, title, firstName, lastName, email, role, created, updated, isVerified };
 }
-
-
 
 async function sendVerificationEmail(account: any, origin: any) {
   let message: string;
@@ -265,7 +256,6 @@ async function sendAlreadyRegisteredEmail(email: any, origin: any) {
     html: `<h4>Email Already Registered</h4><p>Your email <strong>${email}</strong> is already registered.</p>${message}`
   });
 }
-
 
 async function sendPasswordResetEmail(account: any, origin: any) {
   let message: string;

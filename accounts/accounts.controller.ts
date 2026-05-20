@@ -6,8 +6,6 @@ import authorize from '../_middleware/authorize';
 import Role from '../_helpers/role';
 import accountService from './account.service';
 
-
-
 router.post('/authenticate', authenticateSchema, authenticate);
 router.post('/refresh-token', refreshToken);
 router.post('/revoke-token', authorize(), revokeTokenSchema, revokeToken);
@@ -45,8 +43,11 @@ function authenticate(req: any, res: any, next: any) {
 
 function refreshToken(req: any, res: any, next: any) {
   const token = req.cookies.refreshToken;
-  const ipAddress = req.ip;
 
+  // FIX: return 401 instead of crashing when no cookie exists
+  if (!token) return res.status(401).json({ message: 'No refresh token' });
+
+  const ipAddress = req.ip;
   accountService.refreshToken({ token, ipAddress })
     .then(({ refreshToken, ...account }: any) => {
       setTokenCookie(res, refreshToken);
