@@ -6,9 +6,9 @@ Node.js + TypeScript + Express + Sequelize + MySQL backend for the IPT 2026 Fina
 
 | Service | URL |
 |---|---|
-| **Frontend App** | https://cuyos-finalproject-frontend.onrender.com |
-| **Backend API** | https://cuyos-finalproject-backend.onrender.com |
-| **API Docs (Swagger)** | https://cuyos-finalproject-backend.onrender.com/api-docs |
+| **Frontend App** | https://trangia-finalproject-frontend.onrender.com |
+| **Backend API** | https://trangia-finalproject-backend.onrender.com |
+| **API Docs (Swagger)** | https://trangia-finalproject-backend.onrender.com/api-docs |
 
 ---
 
@@ -155,7 +155,7 @@ Set these in Render → your backend service → **Environment**:
 | PUT | `/accounts/:id` | Update account | Admin / Own |
 | DELETE | `/accounts/:id` | Delete account | Admin / Own |
 
-Full interactive documentation available at [`/api-docs`](https://cuyos-finalproject-backend.onrender.com/api-docs).
+Full interactive documentation available at [`/api-docs`](https://trangia-finalproject-backend.onrender.com/api-docs).
 
 --- 
 
