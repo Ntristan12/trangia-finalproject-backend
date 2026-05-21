@@ -1,19 +1,19 @@
 {
-  "database": {
-    "host": "153.92.15.31",
-    "port": 3306,
-    "user": "u875409848_trangia",
-    "password": "2qW^sUg=M",
-    "database": "u875409848_trangia"
-  },
-  "secret": "JWT_SECRET_PLACEHOLDER",
-  "emailFrom": "info@my-app.com",
-  "smtpOptions": {
-    "host": "smtp.ethereal.email",
-    "port": 587,
-    "auth": {
-      "user": "oswald.jaskolski@ethereal.email",
-      "pass": "avH3AMsY6udtsuE9uV"
+    "database": {
+        "host": "127.0.0.1",
+        "port": 3306,
+        "user": "root",
+        "password": "",
+        "database": "node_mysql_api"
+    },
+    "secret": "THIS_IS_A_SUPER_SECRET_KEY_PLS_CHANGE_ME_IN_PRODUCTION",
+    "emailFrom": "info@my-node-api.com",
+    "smtpOptions": {
+        "host": "smtp.ethereal.email",
+        "port": 587,
+        "auth": {
+            "user": "neil.hammes@ethereal.email",
+            "pass": "pnDN6hHFA91uHj5XAY"
+        }
     }
-  }
 }

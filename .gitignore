@@ -1,5 +1,11 @@
-node_modules/
-dist/
+# Environment variables / secrets
 .env
-*.log
+
+# Local config file containing database, JWT, and email credentials
 config.json
+
+# Installed npm packages
+node_modules
+
+# Compiled TypeScript output / build folder
+dist
