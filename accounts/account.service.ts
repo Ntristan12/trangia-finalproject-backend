@@ -236,6 +236,7 @@ async function sendVerificationEmail(account: any, origin: any) {
     let message;
     if (origin) {
         const verifyUrl = `${origin}/account/verify-email?token=${account.verificationToken}`;
+        console.log('VERIFY EMAIL URL:', verifyUrl);
         message = `<p>Please click the below link to verify your email address.</p>
                    <p><a href="${verifyUrl}">${verifyUrl}</a></p>`;
     } else {
