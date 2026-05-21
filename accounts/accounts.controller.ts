@@ -44,7 +44,6 @@ function authenticate(req: any, res: any, next: any) {
 function refreshToken(req: any, res: any, next: any) {
   const token = req.cookies.refreshToken;
 
-  // FIX: return 401 instead of crashing when no cookie exists
   if (!token) return res.status(401).json({ message: 'No refresh token' });
 
   const ipAddress = req.ip;
@@ -53,7 +52,10 @@ function refreshToken(req: any, res: any, next: any) {
       setTokenCookie(res, refreshToken);
       res.json(account);
     })
-    .catch(next);
+    .catch((err: any) => {
+      res.clearCookie('refreshToken');
+      next(err);
+    });
 }
 
 function revokeTokenSchema(req: any, res: any, next: any) {
